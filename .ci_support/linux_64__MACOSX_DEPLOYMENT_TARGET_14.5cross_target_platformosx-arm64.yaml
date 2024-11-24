@@ -1,5 +1,5 @@
 _MACOSX_DEPLOYMENT_TARGET_:
-- '13.0'
+- '14.5'
 cdt_name:
 - conda
 channel_sources:
@@ -7,7 +7,7 @@ channel_sources:
 channel_targets:
 - conda-forge main
 cross_target_platform:
-- osx-64
+- osx-arm64
 docker_image:
 - quay.io/condaforge/linux-anvil-x86_64:alma9
 target_platform:
