@@ -1,0 +1,3 @@
+noarch_upload:
+  - osx-64
+  - osx-arm64
