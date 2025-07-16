@@ -5,6 +5,13 @@ if [ -n "$MACOSX_DEPLOYMENT_TARGET" ]; then
 fi
 export MACOSX_DEPLOYMENT_TARGET="@MACOSX_DEPLOYMENT_TARGET@"
 
+# Allow overriding the SDK being built against to allow older macOS versions to be targeted while building with
+# newer SDKs.
+# https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/cross_development/Using/using.html#//apple_ref/doc/uid/20002000-SW6
+if [ -z "${OSX_SDK_VER}" ]; then
+    OSX_SDK_VER="${MACOSX_DEPLOYMENT_TARGET}"
+fi
+
 # Priority order for SDK setup:
 # 1. If OSX_SDK_DIR is set, use it to set both CONDA_BUILD_SYSROOT and SDKROOT
 # 2. Else if CONDA_BUILD_SYSROOT is set, use it and set SDKROOT to match
@@ -19,7 +26,7 @@ if [ -n "${OSX_SDK_DIR}" ]; then
     if [ -n "${SDKROOT}" ]; then
         export CONDA_SYSROOT_@PLATFORM@_BACKUP_SDKROOT="${SDKROOT}"
     fi
-    export CONDA_BUILD_SYSROOT="${OSX_SDK_DIR}/MacOSX${MACOSX_DEPLOYMENT_TARGET}.sdk"
+    export CONDA_BUILD_SYSROOT="${OSX_SDK_DIR}/MacOSX${OSX_SDK_VER}.sdk"
     export SDKROOT="${CONDA_BUILD_SYSROOT}"
 elif [ -n "${CONDA_BUILD_SYSROOT}" ]; then
     # Use existing CONDA_BUILD_SYSROOT
@@ -40,7 +47,7 @@ fi
 if [[ -n "${CONDA_BUILD_SYSROOT}" && ! -e "${CONDA_BUILD_SYSROOT}" ]]; then
     echo "
 WARNING: The CONDA_BUILD_SYSROOT or SDKROOT that has been set does not contain a valid OSX
-${MACOSX_DEPLOYMENT_TARGET} SDK. This is likely to result in build failures.
+${OSX_SDK_VER} SDK. This is likely to result in build failures.
 "
 fi
 
