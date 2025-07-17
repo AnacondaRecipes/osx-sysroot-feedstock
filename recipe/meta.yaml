@@ -3,7 +3,7 @@ package:
   version: {{ _MACOSX_DEPLOYMENT_TARGET_ }}
 
 build:
-  number: 0
+  number: 1
   skip: True  # [not osx]
 
 outputs:
