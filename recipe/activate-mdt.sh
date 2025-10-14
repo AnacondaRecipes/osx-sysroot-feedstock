@@ -26,6 +26,7 @@ if [ -n "${OSX_SDK_DIR}" ]; then
     if [ -n "${SDKROOT}" ]; then
         export CONDA_SYSROOT_@PLATFORM@_BACKUP_SDKROOT="${SDKROOT}"
     fi
+    # TODO: Could get this with `xcrun --sdk macosx${OSX_SDK_VER} --show-sdk-path`
     export CONDA_BUILD_SYSROOT="${OSX_SDK_DIR}/MacOSX${OSX_SDK_VER}.sdk"
     export SDKROOT="${CONDA_BUILD_SYSROOT}"
 elif [ -n "${CONDA_BUILD_SYSROOT}" ]; then
@@ -57,6 +58,16 @@ if [ -n "${CMAKE_ARGS}" ]; then
     export CONDA_SYSROOT_@PLATFORM@_BACKUP_CMAKE_ARGS="${CMAKE_ARGS}"
 fi
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} -DCMAKE_OSX_SYSROOT=${SDKROOT}"
+
+# Bazel uses another variable to determine which SDK to use.
+if [ -n "${APPLE_SDK_VERSION_OVERRIDE}" ]; then
+    export CONDA_SYSROOT_@PLATFORM@_BACKUP_APPLE_SDK_VERSION_OVERRIDE="${APPLE_SDK_VERSION_OVERRIDE}"
+fi
+export APPLE_SDK_VERSION_OVERRIDE="${OSX_SDK_VER}"
+if [ -n "${APPLE_SDK_PLATFORM}" ]; then
+    export CONDA_SYSROOT_@PLATFORM@_BACKUP_APPLE_SDK_PLATFORM="${APPLE_SDK_PLATFORM}"
+fi
+export APPLE_SDK_PLATFORM="MacOSX"
 
 if [ -n "${CPPFLAGS}" ]; then
     export CONDA_SYSROOT_@PLATFORM@_BACKUP_CPPFLAGS="${CPPFLAGS}"
